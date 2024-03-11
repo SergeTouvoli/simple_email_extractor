@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta content="<?= $_SESSION['token'] ?>" name="token">
+        <title>Extracteur d'Emails</title>
+        <!-- SweetAlert2 -->
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <!-- Icon Font Stylesheet -->
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">       
+        <style>
+            .container {
+                margin-top: 20px;
+            }
+            #result {
+                height: 200px;
+            }
+            .generate-loading-spinner, .text-input-info, .extract-loading-spinner {
+                display: none;
+            }
+            body {
+                background-color: #f5f5f5;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            }
+            .container {
+                margin-top: 20px;
+                background: white;
+                padding: 20px;
+                border-radius: 8px;
+                box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            }
+            #result, #textInput {
+                border-radius: 5px;
+            }
+            .btn-primary, .btn-info, .btn-success, .btn-danger {
+                border: none;
+            }
+            .modal-content {
+                border-radius: 5px;
+            }
+            .btn-close {
+                background: none;
+            }
+            .btn-copy {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                height: 40px;
+                width: 100px;
+                background-color: #4CAF50;
+                color: white;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+            }
+            .btn-copy:hover {
+                opacity: 0.8;
+            }
+            
+        </style>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    </head>
+    <body>
+        <div class="container">
+
+        
+            <h2>Extracteur d'Emails</h2>
+            <!-- Bouton pour ouvrir la modal de test -->
+            <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#testModal">Générer du texte de test</button>
+
+            <!-- Modal Structure -->
+            <div class="modal fade" id="testModal" tabindex="-1" aria-labelledby="testModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="testModalLabel">Générer du texte de test</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            
+                            <form id="generate_text_form" name="test_modal">
+
+                                <div class="mb-3">
+                                    <label for="email_count" class="form-label">Nombre d'emails :</label>
+                                    <input type="text" name="email_count" class="form-control restrict-number" id="email_count" required>
+                                </div>
+
+                                <div class="mb-1">
+                                    <label for="domain_selector" class="form-label">Choisir le domaine d'email :</label>
+                                    <select class="form-select" name="domain_selector" id="domain_selector">
+                                    <?php foreach (EMAIL_DOMAINS as $domain): ?>
+                                        <option value="<?= $domain ; ?>"><?= $domain ; ?></option>
+                                    <?php endforeach; ?>
+                                    </select>
+                                </div>
+
+
+                                <div class=" d-flex flex-column justify-content-center align-items-center">
+                                    <span class="success-message text-success fw-bold text-center mb-4"></span>
+                                    <div class="spinner-border text-primary generate-loading-spinner" role="status">
+                                        <span class="visually-hidden">Chargement...</span>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary mt-4">Générer et tester</button>
+                                </div>
+
+                            </form>
+                        </div>
+                    
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Fermer</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <form id="email_extract_form">
+                <div class="mb-3">
+                    <label for="textInput" class="form-label">Collez votre texte ici :</label>
+                    <textarea class="form-control" name="text_input" id="textInput" rows="5" placeholder="Votre texte..."></textarea>
+                    <div>
+                        <p id="text-size-to-extract"></p>
+                        <p id="char-count-to-extract"></p>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="emailDomain" class="form-label">Sélectionnez le sous-domaine d'email :</label>
+                    <select class="form-select" name="domain_selector" id="emailDomain">
+                        <option value="all">Tous</option>
+                        <option value="@gmail.com">@gmail.com</option>
+                        <option value="@outlook.com">@outlook.com</option>
+                        <option value="@yahoo.com">@yahoo.com</option>
+                        <option value="autres">Autres</option>
+                    </select>
+                </div>
+                <div class="spinner-border text-primary extract-loading-spinner" role="status">
+                    <span class="visually-hidden">Chargement...</span>
+                </div>
+                <button type="submit" class="btn btn-primary">Extraire</button>
+            </form>
+
+            <div class="mt-3 d-flex align-items-center flex-column">
+                <label for="result" class="form-label h4">Résultat de l'extraction :</label>
+                <textarea class="form-control" id="result" rows="5" readonly></textarea>
+                <span class="success-message text-success fw-bold text-center mb-4 result"></span>
+                <button class="btn btn-success  mt-2 me-2" id="copy">Copier</button>
+            </div>
+            <!-- <button class="btn btn-success" id="copy" >Copier</button> -->
+        </div>
+
+        <script src="<?= URL ?>js/main.js"></script>
+
+    </body>
+</html>
