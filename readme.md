@@ -12,6 +12,7 @@
 HTML5, CSS3, JavaScript,Bootstrap,PHP 
 
 ## Captures d'écrans 
-![Capture d'écran 2024-03-11 124418](https://github.com/SergeTouvoli/simple_email_extractor/assets/82214916/83df941e-56c2-46ef-876b-5c3d8061f61b)
 
-![Capture d'écran 2024-03-11 124654](https://github.com/SergeTouvoli/simple_email_extractor/assets/82214916/3aadf098-5852-49c8-be0d-64ab4eb933a1)
+![Capture d'écran 2024-03-11 124418](https://github.com/SergeTouvoli/simple_email_extractor/assets/82214916/8bcf5dfa-6d82-4070-9c45-2f36886c8602)
+
+![Capture d'écran 2024-03-11 124654](https://github.com/SergeTouvoli/simple_email_extractor/assets/82214916/effb94f9-d24d-4b46-a5b0-4c0cefe49b30)
